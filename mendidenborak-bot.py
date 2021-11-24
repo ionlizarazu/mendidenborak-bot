@@ -18,7 +18,7 @@ from telegram.ext import (
 
 import os
 
-TOKEN = os.getenv('TOKEN')
+TOKEN = os.environ('TOKEN')
 logger = logging.getLogger(__name__)
 PORT = int(os.environ.get("PORT", 5000))
 updater = Updater(TOKEN, use_context=True)
@@ -67,9 +67,36 @@ def hasiIbilbidea(
 
     context.bot.send_message(
         chat_id=message.chat.id,
-        text=f"Ibilbidea prestatzen hasteko, ezaugarri desberdinak dauzkagu:",
+        text=f"Denbora kalkulatzeko, aurrena aukeratu bide mota nagusia:",
+        reply_markup=ibilbideaMenu(),
     )
 
+
+def ibilbideaMenu():
+    return InlineKeyboardMarkup(
+        [
+            [
+                InlineKeyboardButton(
+                    "pista", callback_data="Pista"
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    "bidexka", callback_data="Bidexka"
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    "bidexka-zaila", callback_data="BidexkaZaila"
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    "bidez-kanpo", callback_data="BidezKanpo"
+                )
+            ],
+        ]
+    )
 
 
 
