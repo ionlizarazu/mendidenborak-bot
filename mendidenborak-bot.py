@@ -18,7 +18,7 @@ from telegram.ext import (
 
 import os
 
-TOKEN = os.environ('TOKEN')
+TOKEN = os.getenv('TOKEN')
 logger = logging.getLogger(__name__)
 PORT = int(os.environ.get("PORT", 5000))
 updater = Updater(TOKEN, use_context=True)
