@@ -18,11 +18,47 @@ from telegram.ext import (
 
 import os
 
-TOKEN = os.getenv('TOKEN')
+TOKEN = os.getenv("TOKEN")
 logger = logging.getLogger(__name__)
 PORT = int(os.environ.get("PORT", 5000))
 updater = Updater(TOKEN, use_context=True)
 dp = updater.dispatcher
+
+
+class Ibilbidea:
+    def __init__(self):
+        self.bidea = ""
+        self.positiboa = 0
+        self.negatiboa = 0
+        self.luzeera = 0
+
+    def set_bidea(self, bidea):
+        self.bidea = bidea
+
+    def set_positiboa(self, positiboa):
+        try:
+            self.positiboa = int(positiboa)
+            return 0
+        except ValueError:
+            self.positiboa = 0
+            return -1, "Positiboa ez da zenbaki osoa"
+
+    def set_negatiboa(self, negatiboa):
+        try:
+            self.negatiboa = int(negatiboa)
+            return 0
+        except ValueError:
+            self.negatiboa = 0
+            return -1, "Negatiboa ez da zenbaki osoa"
+
+    def set_luzeera(self, luzeera):
+        try:
+            self.luzeera = int(luzeera)
+            return 0
+        except ValueError:
+            self.luzeera = 0
+            return -1, "Luzeera ez da zenbaki osoa"
+
 
 def startingMenu():
     return InlineKeyboardMarkup(
@@ -34,7 +70,6 @@ def startingMenu():
             ],
         ]
     )
-
 
 
 def startBot(update, context, update_message=False, language=False):
@@ -75,29 +110,19 @@ def hasiIbilbidea(
 def ibilbideaMenu():
     return InlineKeyboardMarkup(
         [
-            [
-                InlineKeyboardButton(
-                    "pista", callback_data="Pista"
-                )
-            ],
-            [
-                InlineKeyboardButton(
-                    "bidexka", callback_data="Bidexka"
-                )
-            ],
-            [
-                InlineKeyboardButton(
-                    "bidexka-zaila", callback_data="BidexkaZaila"
-                )
-            ],
-            [
-                InlineKeyboardButton(
-                    "bidez-kanpo", callback_data="BidezKanpo"
-                )
-            ],
+            [InlineKeyboardButton("pista", callback_data="Pista")],
+            [InlineKeyboardButton("bidexka", callback_data="Bidexka")],
+            [InlineKeyboardButton("bidexka-zaila", callback_data="BidexkaZaila")],
+            [InlineKeyboardButton("bidez-kanpo", callback_data="BidezKanpo")],
         ]
     )
 
+
+def aukerak(update, context):
+    query = update.callback_query
+    query.answer()
+    theFunction = globals()[query.data]
+    theFunction(update, context)
 
 
 def error(update, context):
@@ -111,6 +136,7 @@ def main():
     # on different commands - answer in Telegram
     dp.add_handler(CommandHandler("start", startBot))
     dp.add_handler(CommandHandler("hasi", startBot))
+    dp.add_handler(CallbackQueryHandler(aukerak))
 
     # log all errors
     dp.add_error_handler(error)
